@@ -1,0 +1,15 @@
+{
+  "name": "news-react-server",
+  "version": "1.0.0",
+  "description": "Will serve up json information for news-react-app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "David Ross",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.3.0",
+    "newsapi": "^2.4.1"
+  }
+}
