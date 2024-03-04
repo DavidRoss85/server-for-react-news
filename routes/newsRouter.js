@@ -4,7 +4,7 @@ const express = require('express');
 const newsRouter = express.Router();
 
 const NewsAPI = require('newsapi');
-const newsapi = new NewsAPI(apiKey);
+const newsapi = new NewsAPI("apiKey");
 
 newsRouter.route('/')
 .all((req,res,next)=>{

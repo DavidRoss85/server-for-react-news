@@ -8,7 +8,7 @@ userRouter.route('/')
         next();
     })
     .get((req, res) => {
-        res.end('This server will return user information')
+        res.end('This endpoint will return user information');
     })
 
 module.exports = userRouter;

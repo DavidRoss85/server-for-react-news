@@ -4,6 +4,7 @@ const app = express();
 const newsRouter = require('./routes/newsRouter');
 const userRouter = require('./routes/userRouter');
 
+app.use('/news',newsRouter);
 app.use('/user', userRouter);
 app.use((req, res) => {
     res.statusCode = 200;
