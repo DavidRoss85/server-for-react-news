@@ -1,17 +1,24 @@
 const apiKey = process.env.API_KEY
-console.log(apiKey);
-const NewsAPI = require('newsapi');
-const newsapi = new NewsAPI("apiKey");
+// console.log(apiKey);
 
-module.exports.results = (searchRequest) => {
+const NewsAPI = require('newsapi');
+const newsapi = new NewsAPI(apiKey);
+
+module.exports.results = async (searchRequest) => {
     console.log('\n**********\n', 'News request received: ', searchRequest);
-    // console.log('*********\nSearch Object: ', buildRequestObj(searchRequest));
-    
-    newsapi.v2.topHeadlines({...buildRequestObj(searchRequest)}).then(response => {
-        console.log('News API Response: ', response);
-      });
-      
-    return searchRequest;
+    let myResults = {"empty":"results"};
+    if(searchRequest.endpoint==='top-headlines'){
+        myResults = await newsapi.v2.topHeadlines({...buildRequestObj(searchRequest)})
+        // .then(response => {
+        //     myResults=response;
+        // });
+    } else if(searchRequest.endpoint==='everything'){
+        myResults = await newsapi.v2.everything({...buildRequestObj(searchRequest)})
+        // .then(response => {
+        //     myResults=response;
+        // });
+    };
+    return myResults;
 };
 
 

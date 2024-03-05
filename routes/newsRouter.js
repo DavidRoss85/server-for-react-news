@@ -22,15 +22,15 @@ newsRouter.route('/')
         console.log('Received a PUT request');
         res.end('{"test":"result"}');
     })
-    .post((req, res) => {
+    .post(async (req, res) => {
 
         console.log('Recieved a post request', JSON.stringify(req.body));
 
         if (req.body.request === 'search' && !!req.body.data) {
 
             if (req.body.data.endpoint === 'top-headlines'|| req.body.data.endpoint === 'everything') {
-                res.end(JSON.stringify(myNews.results(req.body.data)));
-
+                const newsResults = await myNews.results(req.body.data);
+                res.end(JSON.stringify(newsResults));
             } else {
                 res.end('{"result":"unrecognized endpoint"}');
 
