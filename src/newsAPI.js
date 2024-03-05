@@ -1,100 +1,90 @@
 const apiKey = process.env.API_KEY
-
+console.log(apiKey);
 const NewsAPI = require('newsapi');
 const newsapi = new NewsAPI("apiKey");
 
-// const searchRequest = {
-//     q: 'bitcoin',
-//     // sources: 'bbc-news,the-verge',
-//     domains: 'bbc.co.uk, techcrunch.com',
-//     from: '2017-12-01',
-//     to: '2017-12-12',
-//     language: undefined,
-//     sortBy: 'relevancy',
-//     page: 2
-// }
-Object.keys(searchRequest).forEach(key=>{
-    if(!searchRequest[key]){
-        delete searchRequest[key];
-    }
-});
-const searchContainer = {...searchRequest};
-
-module.exports.topHeadlines = (searchRequest)=>{
-    console.log('\n**********\n', 'News request received: ', searchRequest)
+module.exports.results = (searchRequest) => {
+    console.log('\n**********\n', 'News request received: ', searchRequest);
+    // console.log('*********\nSearch Object: ', buildRequestObj(searchRequest));
+    
+    newsapi.v2.topHeadlines({...buildRequestObj(searchRequest)}).then(response => {
+        console.log('News API Response: ', response);
+      });
+      
     return searchRequest;
-}
-const buildNewsRequest = (searchCriteria) => {
+};
 
-    //console.log('Search Criteria: ', searchCriteria);
-    const { endpoint = 'top-headlines', country, category, pageSize, page, keyword } = searchCriteria;
-    const { searchIn, dateFrom, dateTo, language, sortBy } = searchCriteria;
 
-    // //top-headlines
-    // const searchRequest = {
-    //     // sources: 'bbc-news,the-verge',
-    //     q: 'bitcoin',
-    //     category: 'business',
-    //     language: 'en',
-    //     country: 'us'
-    //   }
+const buildRequestObj = (searchRequest) => {
 
+    const { endpoint = 'top-headlines', country, category, pageSize, page, keyword } = searchRequest;
+    const { searchIn, dateFrom, dateTo, language, sortBy } = searchRequest;
 
     if (endpoint === 'top-headlines') {
-        const immCountry = country ? country === 'all' || country ==='default' ? '' : country : '';
-        const immKeyword = immCountry ? (keyword ? keyword : '') : (keyword ? keyword : 'news');
+        const immCountry = country ? country === 'all' || country === 'default' ? '' : country : '';
         const immCategory = category || '';
-        const immPageSize = pageSize || null;
-        const immPage = page || null;
+        const immKeyword = (immCountry || immCategory) ? (keyword ? keyword : '') : (keyword ? keyword : 'news');
+        const immPageSize = parseInt(pageSize) || null;
+        const immPage = parseInt(page) || null;
 
-        const searchRequest ={
+        const searchObj = {
             q: immKeyword,
             category: immCategory,
             country: immCountry,
             page: immPage,
-            pageSize: immPageSize
-        }
-        return searchRequest;
+            pageSize: immPageSize,
+            //sources: 'bbc'
+        };
+
+        //remove falsy properties
+        Object.keys(searchObj).forEach(key => {
+            if (!searchObj[key]) {
+                delete searchObj[key];
+            }
+        });
+
+        return searchObj;
+
     } else if (endpoint === 'everything') {
-        //everything? q= &searchIn=(title/description/content) &from=(2024-01-20) &to=(2024-01-20)
-        //&language=(ar/de/en/es/fr/he/it/nl/no/pt/ru/sv/ud/zh)
-        //&sortBy=(relevancy/popularity/publishedAt)
-        //&pageSize= &page=
 
         //everything
-        const searchRequest = {
-            q: 'bitcoin',
+        const immKeyword = keyword || 'news';
+        const immSearchIn = searchIn || '';
+        const immFrom = dateFrom || '';
+        const immTo = dateTo || '';
+        const immLang = language || '';
+        const immSort = sortBy || '';
+        const immPageSize = parseInt(pageSize) || null;
+        const immPage = parseInt(page) || null;
+
+        const searchObj = {
+            q: immKeyword,
+            searchIn: immSearchIn,
+            from: immFrom,
+            to: immTo,
+            language: immLang,
+            sortBy: immSort,
+            pageSize: immPageSize,
+            page: immPage,
+            // domains: 'bbc.co.uk, techcrunch.com',
             // sources: 'bbc-news,the-verge',
-            domains: 'bbc.co.uk, techcrunch.com',
-            from: '2017-12-01',
-            to: '2017-12-12',
-            language: 'en',
-            sortBy: 'relevancy',
-            page: 2
         }
-        const immKeyword = keyword ? `q=${keyword}` : '&q=news';
-        const immSearchIn = searchIn ? `&searchIn=${searchIn}` : '';
-        const immFrom = dateFrom ? `&from=${dateFrom}` : '';
-        const immTo = dateTo ? `&to=${dateTo}` : '';
-        const immLang = language ? `&language=${language}` : '';
-        const immSort = sortBy ? `&sortBy${sortBy}` : '';
-        const immPageSize = pageSize ? `&pageSize=${pageSize}` : '';
-        const immPage = page ? `&page=${page}` : '';
 
-        const newsURL =
-            `${URL_BASE}${endpoint}?`
-            + `${immKeyword}${immSearchIn}${immFrom}`
-            + `${immTo}${immLang}${immSort}`
-            + `${immPageSize}${immPage}`;
-            //+ `${URL_API_PRE}${apiKey}`;
+        //remove falsy properties
+        Object.keys(searchObj).forEach(key => {
+            if (!searchObj[key]) {
+                delete searchObj[key];
+            }
+        });
 
-        // console.log('The built url: ' + newsURL)
-
-        return newsURL;
-
+        return searchObj;
     }
 
-}
+};
+
+
+
+
 // Installation
 // $ npm install newsapi --save
 

@@ -10,28 +10,30 @@ newsRouter.route('/')
         res.setHeader('Content-Type', 'text/plain')
         res.appendHeader('Access-Control-Allow-Origin', '*');
         res.appendHeader('Access-Control-Allow-Credentials', 'true');
-        res.appendHeader('Access-Control-Allow-Methods','*');
-        res.appendHeader('Access-Control-Allow-Headers','*')
+        res.appendHeader('Access-Control-Allow-Methods', '*');
+        res.appendHeader('Access-Control-Allow-Headers', '*')
         next();
     })
     .get((req, res) => {
-        console.log(`Received request: ${req.body.test}`)
+        console.log(`Received a GET request`)
         res.end(`{"test":"result"}`)
     })
     .put((req, res) => {
-        console.log(`Received request: ${req.body.test}`)
-        console.log('Received a put request');
+        console.log('Received a PUT request');
         res.end('{"test":"result"}');
     })
-    .post((req,res)=>{
-        
+    .post((req, res) => {
+
         console.log('Recieved a post request', JSON.stringify(req.body));
 
-        if (req.body.request==='search' && !!req.body.data){
-            if(req.body.data.endpoint==='top-headlines'){
-                res.end(JSON.stringify(myNews.topHeadlines(req.body.data)))
-            }else if(req.body.data.endpoint==='everything'){
-                res.end('{"result":"result"}')
+        if (req.body.request === 'search' && !!req.body.data) {
+
+            if (req.body.data.endpoint === 'top-headlines'|| req.body.data.endpoint === 'everything') {
+                res.end(JSON.stringify(myNews.results(req.body.data)));
+
+            } else {
+                res.end('{"result":"unrecognized endpoint"}');
+
             }
             return;
         }
