@@ -14,14 +14,6 @@ newsRouter.route('/')
         res.appendHeader('Access-Control-Allow-Headers', '*')
         next();
     })
-    .get((req, res) => {
-        console.log(`Received a GET request`)
-        res.end(`{"test":"result"}`)
-    })
-    .put((req, res) => {
-        console.log('Received a PUT request');
-        res.end('{"test":"result"}');
-    })
     .post(async (req, res) => {
 
         console.log('Recieved a post request', JSON.stringify(req.body));
@@ -32,6 +24,7 @@ newsRouter.route('/')
                 const newsResults = await myNews.results(req.body.data);
                 res.end(JSON.stringify(newsResults));
             } else {
+                //Add an error return object here:
                 res.end('{"result":"unrecognized endpoint"}');
 
             }

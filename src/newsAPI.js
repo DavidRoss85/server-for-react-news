@@ -1,27 +1,28 @@
 const apiKey = process.env.API_KEY
-// console.log(apiKey);
 
 const NewsAPI = require('newsapi');
 const newsapi = new NewsAPI(apiKey);
 
+//Handles calls to the news API
 module.exports.results = async (searchRequest) => {
+
     console.log('\n**********\n', 'News request received: ', searchRequest);
     let myResults = {"empty":"results"};
+
+    //There are only 2 endpoints for the NewsAPI. Each takes an object with search properties.
+    //See notes below
     if(searchRequest.endpoint==='top-headlines'){
-        myResults = await newsapi.v2.topHeadlines({...buildRequestObj(searchRequest)})
-        // .then(response => {
-        //     myResults=response;
-        // });
+        myResults = await newsapi.v2.topHeadlines({...buildRequestObj(searchRequest)});
+
     } else if(searchRequest.endpoint==='everything'){
-        myResults = await newsapi.v2.everything({...buildRequestObj(searchRequest)})
-        // .then(response => {
-        //     myResults=response;
-        // });
+        myResults = await newsapi.v2.everything({...buildRequestObj(searchRequest)});
+
     };
     return myResults;
 };
 
 
+//This will format the object for use with the NewsAPI
 const buildRequestObj = (searchRequest) => {
 
     const { endpoint = 'top-headlines', country, category, pageSize, page, keyword } = searchRequest;
@@ -91,6 +92,7 @@ const buildRequestObj = (searchRequest) => {
 
 
 
+//***************NOTES*****************
 
 // Installation
 // $ npm install newsapi --save
